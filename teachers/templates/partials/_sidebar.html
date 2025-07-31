@@ -1,0 +1,32 @@
+{% load i18n%}
+
+<ul class="sidebar navbar-nav">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">
+            <span>{% trans "Home" %}</span>
+        </a>
+    </li>
+
+    {% if request.user.is_teacher %}
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <span>{% trans "Attendance" %}</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 't_clas' request.user.teacher.id 2 %}">
+            <span>{% trans "Marks" %}</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <span>{% trans "Time Table" %}</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <span>{% trans "Reports" %}</span>
+        </a>
+    </li>
+    {% endif %}
+</ul>
