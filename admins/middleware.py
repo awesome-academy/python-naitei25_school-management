@@ -21,23 +21,24 @@ from utils.constant import (
 def is_admin_path(path, supported_langs=None):
     """
     Check if the given path is an admin path with flexible language support
-    
+
     Args:
         path (str): The request path to check
         supported_langs (list, optional): List of supported language codes
-        
+
     Returns:
         bool: True if path is an admin path, False otherwise
     """
     if supported_langs is None:
         # Get supported languages from Django settings
-        languages = getattr(settings, 'LANGUAGES', [(DEFAULT_LANGUAGE_CODE, DEFAULT_LANGUAGE_NAME)])
+        languages = getattr(settings, 'LANGUAGES', [
+                            (DEFAULT_LANGUAGE_CODE, DEFAULT_LANGUAGE_NAME)])
         supported_langs = [lang_code for lang_code, _ in languages]
-    
+
     # Create regex pattern with supported languages
     lang_pattern = '|'.join(supported_langs)
     pattern = ADMIN_URL_PATTERN_TEMPLATE.format(lang_pattern=lang_pattern)
-    
+
     return re.match(pattern, path) is not None
 
 

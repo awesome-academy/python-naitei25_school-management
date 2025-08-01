@@ -64,14 +64,14 @@
             </h4>
             <div class="row">
                 <div class="col-md-4">
-                    <button class="action-btn btn-students">
+                    <a href="{% url 'add_student' %}" class="action-btn btn-students">
                         {% trans "Add Student" %}
-                    </button>
+                    </a>
                 </div>
                 <div class="col-md-4">
-                    <button class="action-btn btn-teachers">
+                    <a href="{% url 'add_teacher' %}" class="action-btn btn-teachers">
                         {% trans "Add Teacher" %}
-                    </button>
+                    </a>
                 </div>  
             </div>
         </div>
