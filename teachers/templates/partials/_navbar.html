@@ -2,18 +2,37 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'index' %}"></a>
+    <a class="navbar-brand" href="{% url 'teacher_dashboard' %}">
+        <i class="fas fa-chalkboard-teacher"></i> {% trans "Teacher Portal" %}
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-            <a class="nav-link text-capitalize">{{ request.user.teacher.name }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">{% trans "Logout" %}</a>
-        </li>
+        {% if user.is_authenticated and user.is_teacher %}
+            <li class="nav-item">
+                <a class="nav-link text-capitalize">
+                    <i class="fas fa-user"></i> 
+                    {% if teacher %}
+                        {{ teacher.name }}
+                    {% else %}
+                        {{ user.get_full_name|default:user.username }}
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'unified_logout' %}">
+                    <i class="fas fa-sign-out-alt"></i> {% trans "Logout" %}
+                </a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'unified_login' %}">
+                    <i class="fas fa-sign-in-alt"></i> {% trans "Login" %}
+                </a>
+            </li>
+        {% endif %}
       </ul>
     </div>
   </div>

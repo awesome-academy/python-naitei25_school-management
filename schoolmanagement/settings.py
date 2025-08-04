@@ -64,6 +64,10 @@ MIDDLEWARE = [
     "admins.middleware.AdminSecurityMiddleware",
     "admins.middleware.AdminPermissionMiddleware",
     "admins.middleware.AdminActivityLogMiddleware",
+    # Custom teacher middleware
+    "teachers.middleware.TeacherPermissionMiddleware",
+    # Custom student middleware
+    "students.middleware.StudentPermissionMiddleware",
 ]
 
 ROOT_URLCONF = "schoolmanagement.urls"

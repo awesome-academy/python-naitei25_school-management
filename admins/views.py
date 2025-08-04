@@ -89,7 +89,7 @@ def admin_logout(request):
     if request.user.is_authenticated and request.user.is_superuser:
         messages.success(request, _(ADMIN_LOGOUT_SUCCESS_MESSAGE))
     logout(request)
-    return redirect('admin_login')
+    return redirect('unified_login')
 
 
 def add_student(request):

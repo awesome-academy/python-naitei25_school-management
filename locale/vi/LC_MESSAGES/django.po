@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-04 08:52+0700\n"
+"POT-Creation-Date: 2025-08-04 09:39+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,34 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: .\admins\common_views.py:155
+msgid "Welcome {}! (Administrator)"
+msgstr ""
+
+#: .\admins\common_views.py:162
+#, fuzzy
+#| msgid "Welcome, {{ name }}!"
+msgid "Welcome {}! (Teacher)"
+msgstr "Chào mừng, {{ name }}!"
+
+#: .\admins\common_views.py:169
+#, fuzzy
+#| msgid "Welcome, {{ name }}!"
+msgid "Welcome {}! (Student)"
+msgstr "Chào mừng, {{ name }}!"
+
+#: .\admins\common_views.py:176
+#, fuzzy
+#| msgid "You do not have permission to access this page."
+msgid "Your account does not have access to this system."
+msgstr "Bạn không có quyền truy cập vào trang này."
+
+#: .\admins\common_views.py:202
+#, fuzzy
+#| msgid "You have been logged out successfully."
+msgid "You have been logged out successfully{}"
+msgstr "Bạn đã đăng xuất thành công."
 
 #: .\admins\forms.py:136 .\admins\forms.py:281
 #, fuzzy
@@ -143,42 +171,41 @@ msgstr "Khoa"
 msgid "Select a department"
 msgstr "Khoa"
 
-#: .\admins\templates\admins\add_student.html:13
-#: .\admins\templates\admins\add_teacher.html:13
+#: .\admins\templates\admins\add_student.html:14
+#: .\admins\templates\admins\add_teacher.html:14
 msgid "Back to Dashboard"
 msgstr "Quay lại Bảng điều khiển"
 
-#: .\admins\templates\admins\add_student.html:23
+#: .\admins\templates\admins\add_student.html:24
 msgid "Student Login Account"
 msgstr "Tài khoản đăng nhập sinh viên"
 
-#: .\admins\templates\admins\add_student.html:24
+#: .\admins\templates\admins\add_student.html:25
 msgid "Create login credentials for the student to access the system"
 msgstr "Tạo thông tin đăng nhập cho sinh viên để truy cập hệ thống"
 
-#: .\admins\templates\admins\add_student.html:67
+#: .\admins\templates\admins\add_student.html:68
 msgid "Student Information"
 msgstr "Thông tin sinh viên"
 
-#: .\admins\templates\admins\add_student.html:132
-#: .\admins\templates\admins\add_teacher.html:135
-#: .\teachers\templates\t_homepage.html:121
+#: .\admins\templates\admins\add_student.html:133
+#: .\admins\templates\admins\add_teacher.html:136
 msgid "Cancel"
 msgstr "Hủy"
 
-#: .\admins\templates\admins\add_teacher.html:23
+#: .\admins\templates\admins\add_teacher.html:24
 msgid "Teacher Login Account"
 msgstr "Tài khoản đăng nhập giáo viên"
 
-#: .\admins\templates\admins\add_teacher.html:24
+#: .\admins\templates\admins\add_teacher.html:25
 msgid "Create login credentials for the teacher to access the system"
 msgstr "Tạo thông tin đăng nhập cho giáo viên để truy cập hệ thống"
 
-#: .\admins\templates\admins\add_teacher.html:67
+#: .\admins\templates\admins\add_teacher.html:68
 msgid "Teacher Information"
 msgstr "Thông tin giáo viên"
 
-#: .\admins\templates\admins\add_teacher.html:79
+#: .\admins\templates\admins\add_teacher.html:80
 msgid "Teacher ID will be automatically generated (e.g., T001, T002, etc.)"
 msgstr "Mã giáo viên sẽ được tự động tạo (ví dụ: T001, T002, v.v.)"
 
@@ -187,8 +214,8 @@ msgid "Profile Information"
 msgstr "Thông tin cá nhân"
 
 #: .\admins\templates\admins\base.html:59
-#: .\teachers\templates\partials\_navbar.html:15
-#: .\teachers\templates\t_homepage.html:122
+#: .\students\templates\students\dashboard.html:47
+#: .\teachers\templates\partials\_navbar.html:26
 msgid "Logout"
 msgstr "Đăng xuất"
 
@@ -261,16 +288,67 @@ msgid "Admin Login"
 msgstr "Đăng nhập Quản trị"
 
 #: .\admins\templates\admins\login.html:24
+#: .\teachers\templates\teachers\login.html:124
 msgid "School Management System"
 msgstr "Hệ thống Quản lý Trường học"
 
 #: .\admins\templates\admins\login.html:65
+#: .\admins\templates\common\login.html:213
+#: .\students\templates\students\dashboard.html:53
+#: .\teachers\templates\partials\_navbar.html:32
+#: .\teachers\templates\teachers\login.html:152
 msgid "Login"
 msgstr "Đăng nhập"
 
 #: .\admins\templates\admins\login.html:70
 msgid "Administrator Area Only"
 msgstr "Khu vực dành riêng cho Quản trị viên"
+
+#: .\admins\templates\common\login.html:8
+#, fuzzy
+#| msgid "School Management System"
+msgid "Login - School Management System"
+msgstr "Hệ thống Quản lý Trường học"
+
+#: .\admins\templates\common\login.html:160
+#, fuzzy
+#| msgid "School Management System"
+msgid "School Management"
+msgstr "Hệ thống Quản lý Trường học"
+
+#: .\admins\templates\common\login.html:161
+msgid "Unified Login Portal"
+msgstr "Cổng Đăng nhập Thống nhất"
+
+#: .\admins\templates\common\login.html:165
+#, fuzzy
+#| msgid "Admin Login"
+msgid "Admin"
+msgstr "Đăng nhập Quản trị"
+
+#: .\admins\templates\common\login.html:169
+#, fuzzy
+#| msgid "Teachers"
+msgid "Teacher"
+msgstr "Giáo viên"
+
+#: .\admins\templates\common\login.html:173
+#, fuzzy
+#| msgid "Students"
+msgid "Student"
+msgstr "Học sinh"
+
+#: .\admins\templates\common\login.html:182
+msgid ""
+"System will automatically detect your role and redirect you to the "
+"appropriate dashboard"
+msgstr ""
+
+#: .\admins\templates\common\login.html:219
+#, fuzzy
+#| msgid "Create login credentials for the student to access the system"
+msgid "Enter your credentials to access the system"
+msgstr "Tạo thông tin đăng nhập cho sinh viên để truy cập hệ thống"
 
 #: .\admins\views.py:129
 msgid "Student \"{}\" has been successfully added."
@@ -288,80 +366,207 @@ msgstr "Giáo viên \"{}\" đã được thêm thành công."
 msgid "Error creating teacher: {}"
 msgstr "Lỗi khi tạo giáo viên: {}"
 
+#: .\students\forms.py:111 .\students\middleware.py:38
+#, fuzzy
+#| msgid "You do not have permission to access the admin area."
+msgid "You do not have permission to access the student area."
+msgstr "Bạn không có quyền truy cập vào khu vực quản trị."
+
+#: .\students\middleware.py:33
+#, fuzzy
+#| msgid "Please login to access the admin area."
+msgid "Please login to access the student area."
+msgstr "Vui lòng đăng nhập để truy cập khu vực quản trị."
+
+#: .\students\templates\students\dashboard.html:12
+#, fuzzy
+#| msgid "Back to Dashboard"
+msgid "Student Dashboard"
+msgstr "Quay lại Bảng điều khiển"
+
+#: .\students\templates\students\dashboard.html:27
+#, fuzzy
+#| msgid "Student Information"
+msgid "Student Portal"
+msgstr "Thông tin sinh viên"
+
+#: .\students\templates\students\dashboard.html:82
+#: .\teachers\templates\t_homepage.html:51
+msgid "Welcome"
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:89
+msgid "Access your academic information and resources"
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:101
+msgid "My Grades"
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:102
+msgid ""
+"View your academic performance, test scores, and overall grades for all "
+"subjects."
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:105
+msgid "View Grades"
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:116
+#: .\teachers\templates\t_homepage.html:71
+msgid "Attendance"
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:117
+msgid ""
+"Check your attendance record and ensure you meet the minimum attendance "
+"requirements."
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:120
+msgid "View Attendance"
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:131
+msgid "Class Schedule"
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:132
+msgid "View your class timetable, upcoming lectures, and schedule information."
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:135
+msgid "View Schedule"
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:146
+msgid "Academic Reports"
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:147
+msgid ""
+"Generate and download academic reports, transcripts, and performance "
+"summaries."
+msgstr ""
+
+#: .\students\templates\students\dashboard.html:150
+#: .\teachers\templates\t_homepage.html:120
+msgid "Generate Reports"
+msgstr ""
+
+#: .\students\views.py:42 .\teachers\views.py:44
+#, fuzzy
+#| msgid "Welcome, {{ name }}!"
+msgid "Welcome {}!"
+msgstr "Chào mừng, {{ name }}!"
+
+#: .\students\views.py:65 .\teachers\views.py:67
+msgid "You do not have permission to access this page."
+msgstr "Bạn không có quyền truy cập vào trang này."
+
+#: .\students\views.py:72
+msgid "Student profile not found."
+msgstr "Không tìm thấy hồ sơ sinh viên."
+
+#: .\students\views.py:89 .\teachers\views.py:91
+msgid "You have been logged out successfully."
+msgstr "Bạn đã đăng xuất thành công."
+
+#: .\teachers\forms.py:111 .\teachers\middleware.py:38
+#, fuzzy
+#| msgid "You do not have permission to access the admin area."
+msgid "You do not have permission to access the teacher area."
+msgstr "Bạn không có quyền truy cập vào khu vực quản trị."
+
+#: .\teachers\middleware.py:33
+#, fuzzy
+#| msgid "Please login to access the admin area."
+msgid "Please login to access the teacher area."
+msgstr "Vui lòng đăng nhập để truy cập khu vực quản trị."
+
+#: .\teachers\templates\partials\_navbar.html:6
+#, fuzzy
+#| msgid "Teachers"
+msgid "Teacher Portal"
+msgstr "Giáo viên"
+
 #: .\teachers\templates\t_homepage.html:12
 msgid "homepage"
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:36
-msgid "Welcome"
-msgstr ""
-
-#: .\teachers\templates\t_homepage.html:50
-msgid "Attendance"
-msgstr ""
-
-#: .\teachers\templates\t_homepage.html:51
+#: .\teachers\templates\t_homepage.html:72
 msgid ""
 "Enter the attendance of the students based on the class they are in. There "
 "is also the provision to edit the attendance of a whole class or student "
 "individually."
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:54
+#: .\teachers\templates\t_homepage.html:75
 msgid "Enter Attendance"
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:65
+#: .\teachers\templates\t_homepage.html:86
 msgid "Marks"
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:66
+#: .\teachers\templates\t_homepage.html:87
 msgid ""
 "Enter the marks of the students based on the class they are in. This "
 "includes Internals, events and SEE. The marks of the students can also be "
 "edited."
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:69
+#: .\teachers\templates\t_homepage.html:90
 msgid "Enter Marks"
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:80
+#: .\teachers\templates\t_homepage.html:101
 msgid "TimeTable"
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:81
+#: .\teachers\templates\t_homepage.html:102
 msgid ""
 "View the timetable in a tabular form. For a particular class, it specifies a "
 "list of teachers who handle the same class that are free for that time slot."
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:84
+#: .\teachers\templates\t_homepage.html:105
 msgid "View TimeTable"
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:95
+#: .\teachers\templates\t_homepage.html:116
 msgid "Reports"
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:96
+#: .\teachers\templates\t_homepage.html:117
 msgid ""
 "Generate reports for each class. These reports include generating a table "
 "consisting of the students belonging to that class and their respective CIE "
 "and Attendance."
 msgstr ""
 
-#: .\teachers\templates\t_homepage.html:99
-msgid "Generate Reports"
-msgstr ""
+#: .\teachers\templates\teachers\login.html:8
+#, fuzzy
+#| msgid "Admin Login - School Management"
+msgid "Teacher Login - School Management"
+msgstr "Đăng nhập Giáo viên - Quản lý Trường học"
 
-#: .\teachers\templates\t_homepage.html:114
-msgid "Ready to Leave?"
-msgstr ""
+#: .\teachers\templates\teachers\login.html:123
+#, fuzzy
+#| msgid "Teacher Login Account"
+msgid "Teacher Login"
+msgstr "Tài khoản đăng nhập giáo viên"
 
-#: .\teachers\templates\t_homepage.html:119
-msgid "Select \\"
-msgstr ""
+#: .\teachers\templates\teachers\login.html:158
+#, fuzzy
+#| msgid "Teacher Information"
+msgid "Teacher Area Only"
+msgstr "Thông tin giáo viên"
+
+#: .\teachers\views.py:74
+msgid "Teacher profile not found."
+msgstr "Không tìm thấy hồ sơ giáo viên."
 
 #~ msgid "Username must be at least 3 characters long."
 #~ msgstr "Tên đăng nhập phải có ít nhất 3 ký tự."
@@ -375,23 +580,8 @@ msgstr ""
 #~ msgid "This account is inactive."
 #~ msgstr "Tài khoản này đã bị vô hiệu hóa."
 
-#~ msgid "You do not have permission to access the admin area."
-#~ msgstr "Bạn không có quyền truy cập vào khu vực quản trị."
-
-#~ msgid "You do not have permission to access this page."
-#~ msgstr "Bạn không có quyền truy cập vào trang này."
-
-#~ msgid "You have been logged out successfully."
-#~ msgstr "Bạn đã đăng xuất thành công."
-
 #~ msgid "Settings"
 #~ msgstr "Cài đặt"
 
-#~ msgid "Welcome, {{ name }}!"
-#~ msgstr "Chào mừng, {{ name }}!"
-
 #~ msgid "System Settings"
 #~ msgstr "Cài đặt hệ thống"
-
-#~ msgid "Please login to access the admin area."
-#~ msgstr "Vui lòng đăng nhập để truy cập khu vực quản trị."
