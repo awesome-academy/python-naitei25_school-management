@@ -899,3 +899,98 @@ class EditStudentForm(forms.ModelForm):
             raise ValidationError(_('Email already exists'))
         return email
 
+class DepartmentForm(forms.ModelForm):
+    class Meta:
+        model = Dept
+        fields = ['id', 'name']
+        widgets = {
+            'id': forms.TextInput(attrs={
+                'class': 'form-control',
+                'required': True
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'required': True
+            }),
+        }
+        labels = {
+            'id': 'Department ID',
+            'name': 'Department Name',
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Nếu đang update (tức là đã có instance tồn tại), khóa trường 'id'
+        if self.instance and self.instance.pk:
+            self.fields['id'].disabled = True
+
+class SubjectForm(forms.ModelForm):
+    class Meta:
+        model = Subject
+        fields = ['id', 'name', 'shortname', 'dept']
+        widgets = {
+            'id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter subject ID'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter subject name'}),
+            'shortname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter subject shortname'}),
+            'dept': forms.Select(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'id': 'Subject ID',
+            'name': 'Subject Name',
+            'shortname': 'Short Name',
+            'dept': 'Department',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Nếu đang update (tức là đã có instance tồn tại), khóa trường 'id'
+        if self.instance and self.instance.pk:
+            self.fields['id'].disabled = True
+
+class AddSubjectToClassForm(forms.Form):
+    """
+    Form for để add subject vào class thông qua assign
+    """
+    subject = forms.ModelChoiceField(
+        queryset=Subject.objects.all(),
+        widget=forms.Select(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'required': True
+        }),
+        label=_('Subject'),
+        empty_label=_('Select a subject')
+    )
+    #Chọn teacher cho môn đó 
+    teacher = forms.ModelChoiceField(
+        queryset=Teacher.objects.all(),
+        widget=forms.Select(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'required': True
+        }),
+        label=_('Teacher'),
+        empty_label=_('Select a teacher')
+    )
+
+    def __init__(self, *args, class_obj=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.class_obj = class_obj
+        if class_obj:
+            assigned_subjects = Assign.objects.filter(class_id=class_obj).values_list('subject', flat=True)
+            self.fields['subject'].queryset = Subject.objects.exclude(id__in=assigned_subjects)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        subject = cleaned_data.get('subject')
+        teacher = cleaned_data.get('teacher')
+
+        if subject and teacher and self.class_obj:
+            # Kiểm tra xem subject đã được assign cho teacher và class hay chưa
+            if Assign.objects.filter(
+                class_id=self.class_obj,
+                subject=subject,
+                teacher=teacher
+            ).exists():
+                raise forms.ValidationError(
+                    _('This subject is already assigned to this class with the selected teacher.')
+                )
+        return cleaned_data

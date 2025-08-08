@@ -31,4 +31,20 @@ urlpatterns = [
     path('classes/<str:class_id>/add-student/', views.add_student_to_class, name='add_student_to_class'),
     path('students/edit/<str:student_id>/', views.edit_student, name='edit_student'),
     path('students/delete/<str:student_id>/', views.delete_student, name='delete_student'),
+
+     # Deparment URLs
+    path('departments/', views.department_list, name='department_list'),
+    path('departments/add/', views.add_department, name='add_department'),
+    path('departments/<str:dept_id>/edit/', views.edit_department, name='edit_department'),
+    path('departments/<str:dept_id>/delete/', views.delete_department, name='delete_department'),
+    
+    #Subjects URLs
+    path('subjects/', views.subject_list, name='subject_list'),
+    path('subjects/add/', views.add_subject, name='add_subject'),
+    path('subjects/<str:subject_id>/edit/', views.edit_subject, name='edit_subject'),
+    path('subjects/<str:subject_id>/delete/', views.delete_subject, name='delete_subject'),
+    
+    #Thêm subject vào class
+    path('classes/<str:class_id>/add-subject/', views.add_subject_to_class, name='add_subject_to_class'),
+    path('classes/<str:class_id>/remove-subject/<int:assign_id>/', views.remove_subject_from_class, name='remove_subject_from_class'),
 ]

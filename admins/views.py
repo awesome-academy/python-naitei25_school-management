@@ -26,7 +26,10 @@ from .forms import (
     TimetableFilterForm,
     TimetableForm,
     ClassForm,
-    EditStudentForm)
+    EditStudentForm,
+    DepartmentForm,
+    SubjectForm,
+    AddSubjectToClassForm)
 # Model imports
 from students.models import Student, Attendance, StudentSubject, AttendanceTotal
 from teachers.models import Teacher, Assign, AssignTime, Marks
@@ -501,13 +504,19 @@ def edit_class(request, class_id):
         messages.error(request, _('The class does not exist!'))
         return redirect('class_list')
 
-    # Lấy danh sách học sinh thuộc lớp và sắp xếp theo tên
+    # Lấy danh sách học sinh và các Assign records (môn học) thuộc lớp
     students = Student.objects.filter(class_id=class_obj).order_by('name')
+    assignments = Assign.objects.filter(class_id=class_obj).select_related('subject', 'teacher').order_by('subject__id')
 
-    # Phân trang
+    # Phân trang cho học sinh
     paginator = Paginator(students, PAGE_SIZE)
     page_number = request.GET.get('page')
     students_page = paginator.get_page(page_number)
+
+    # Phân trang cho môn học (assignments)
+    assignments_paginator = Paginator(assignments, PAGE_SIZE)
+    assignments_page_number = request.GET.get('assignments_page')
+    assignments_page = assignments_paginator.get_page(assignments_page_number)
 
     if request.method == 'POST':
         form = ClassForm(request.POST, instance=class_obj)
@@ -534,9 +543,9 @@ def edit_class(request, class_id):
         'title': _('Edit Class'),
         'submit_text': _('Update Class'),
         'students': students_page,
+        'assignments': assignments_page,
     }
     return render(request, 'admins/class_form.html', context)
-
 
 @login_required
 @permission_required('admins.delete_class', raise_exception=True)
@@ -740,5 +749,276 @@ def delete_student(request, student_id):
     except Student.DoesNotExist:
         messages.error(request, _('The student does not exist!'))
 
+    return redirect('edit_class', class_id=class_id)
+
+@login_required
+def department_list(request):
+    """
+    View for listing all departments with pagination
+    """
+    departments = Dept.objects.all().order_by('id')
+    
+    # Pagination
+    paginator = Paginator(departments, PAGE_SIZE)
+    page_number = request.GET.get('page')
+    departments_page = paginator.get_page(page_number)
+    
+    context = {
+        'departments': departments_page,
+        'admin_user': request.user,
+        'title': _('Manage Departments'),
+    }
+    return render(request, 'admins/department_list.html', context)
+
+@login_required
+@permission_required('admins.add_dept', raise_exception=True)
+def add_department(request):
+    """
+    View để thêm department mới
+    """
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, _('Department has been added successfully!'))
+                return redirect('department_list')
+            except Exception as e:
+                messages.error(request, _('Error creating department: {}').format(str(e)))
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+    else:
+        form = DepartmentForm()
+    
+    context = {
+        'form': form,
+        'admin_user': request.user,
+        'title': _('Add Department'),
+        'submit_text': _('Add Department'),
+    }
+    return render(request, 'admins/department_form.html', context)
+
+@login_required
+@permission_required('admins.change_dept', raise_exception=True)
+def edit_department(request, dept_id):
+    """
+    View để sửa department 
+    """
+    try:
+        department = Dept.objects.get(id=dept_id)
+    except Dept.DoesNotExist:
+        messages.error(request, _('The department does not exist!'))
+        return redirect('department_list')
+    
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST, instance=department)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, _('Department has been updated successfully!'))
+                return redirect('department_list')
+            except Exception as e:
+                messages.error(request, _('Error updating department: {}').format(str(e)))
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+    else:
+        form = DepartmentForm(instance=department)
+    
+    context = {
+        'form': form,
+        'department': department,
+        'admin_user': request.user,
+        'title': _('Edit Department'),
+        'submit_text': _('Update Department'),
+    }
+    return render(request, 'admins/department_form.html', context)
+
+@login_required
+@permission_required('admins.delete_dept', raise_exception=True)
+def delete_department(request, dept_id):
+    """
+    View để xóa khoa:
+    - Nếu đã có Teacher, Subject, hoặc Class thuộc khoa này → không cho xóa.
+    - Nếu không có dữ liệu liên quan → xóa hoàn toàn.
+    """
+    try:
+        department = Dept.objects.get(id=dept_id)
+
+        # Kiểm tra dữ liệu liên quan
+        has_teachers = Teacher.objects.filter(dept=department).exists()
+        has_subjects = Subject.objects.filter(dept=department).exists()
+        has_classes = Class.objects.filter(dept=department).exists()
+
+        if any([has_teachers, has_subjects, has_classes]):
+            messages.warning(request, _(
+                'Cannot delete department because it has related teachers, subjects, or classes.'))
+        else:
+            department.delete()
+            messages.success(request, _('Department has been deleted successfully!'))
+
+    except Dept.DoesNotExist:
+        messages.error(request, _('The department does not exist!'))
+
+    return redirect('department_list')
+
+@login_required
+@permission_required('admins.add_subject', raise_exception=True)
+def add_subject(request):
+    if request.method == 'POST':
+        form = SubjectForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, _('Subject has been added successfully!'))
+                return redirect('subject_list')
+            except Exception as e:
+                messages.error(request, _('Error creating subject: {}').format(str(e)))
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+    else:
+        form = SubjectForm()
+
+    context = {
+        'form': form,
+        'admin_user': request.user,
+        'title': _('Add Subject'),
+        'submit_text': _('Add Subject'),
+    }
+    return render(request, 'admins/subject_form.html', context)
+
+@login_required
+@permission_required('admins.change_subject', raise_exception=True)
+def edit_subject(request, subject_id):
+    try:
+        subject = Subject.objects.get(id=subject_id)
+    except Subject.DoesNotExist:
+        messages.error(request, _('The subject does not exist!'))
+        return redirect('subject_list')
+
+    if request.method == 'POST':
+        form = SubjectForm(request.POST, instance=subject)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, _('Subject has been updated successfully!'))
+                return redirect('subject_list')
+            except Exception as e:
+                messages.error(request, _('Error updating subject: {}').format(str(e)))
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+    else:
+        form = SubjectForm(instance=subject)
+
+    context = {
+        'form': form,
+        'subject': subject,
+        'admin_user': request.user,
+        'title': _('Edit Subject'),
+        'submit_text': _('Update Subject'),
+    }
+    return render(request, 'admins/subject_form.html', context)
+
+@login_required
+def subject_list(request):
+    subjects = Subject.objects.all().order_by('id')
+    paginator = Paginator(subjects, PAGE_SIZE)
+    page_number = request.GET.get('page')
+    subjects_page = paginator.get_page(page_number)
+
+    context = {
+        'subjects': subjects_page,
+        'admin_user': request.user,
+        'title': _('Manage Subjects'),
+    }
+    return render(request, 'admins/subject_list.html', context)
+
+@login_required
+@permission_required('admins.delete_subject', raise_exception=True)
+def delete_subject(request, subject_id):
+    try:
+        subject = Subject.objects.get(id=subject_id)
+        # Kiểm tra data
+        has_assignments = Assign.objects.filter(subject=subject).exists()
+        has_student_subjects = StudentSubject.objects.filter(subject=subject).exists()
+        if has_assignments or has_student_subjects:
+            messages.warning(request, _('Cannot delete subject because it has related assignments or student records.'))
+        else:
+            subject.delete()
+            messages.success(request, _('Subject has been deleted successfully!'))
+    except Subject.DoesNotExist:
+        messages.error(request, _('The subject does not exist!'))
+    return redirect('subject_list')
+
+@login_required
+@permission_required('assign.add_assign', raise_exception=True)
+def add_subject_to_class(request, class_id):
+    """
+    View để thêm subject vào class 
+    """
+    try:
+        class_obj = Class.objects.get(id=class_id)
+    except Class.DoesNotExist:
+        messages.error(request, _('The class does not exist!'))
+        return redirect('class_list')
+
+    if request.method == 'POST':
+        form = AddSubjectToClassForm(request.POST, class_obj=class_obj)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    # Create a new Assign record
+                    Assign.objects.create(
+                        class_id=class_obj,
+                        subject=form.cleaned_data['subject'],
+                        teacher=form.cleaned_data['teacher']
+                    )
+                    messages.success(request, _(
+                        'Subject "{}" has been successfully assigned to class "{}".').format(
+                            form.cleaned_data['subject'], class_obj))
+                    return redirect('edit_class', class_id=class_id)
+            except Exception as e:
+                messages.error(request, _(
+                    'Error assigning subject to class: {}').format(str(e)))
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+    else:
+        form = AddSubjectToClassForm(class_obj=class_obj)
+
+    context = {
+        'form': form,
+        'class_obj': class_obj,
+        'admin_user': request.user,
+        'title': _('Add Subject to {}').format(class_obj),
+        'submit_text': _('Add Subject'),
+    }
+    return render(request, 'admins/add_subject_to_class.html', context)
+
+@login_required
+@permission_required('assign.delete_assign', raise_exception=True)
+def remove_subject_from_class(request, class_id, assign_id):
+    """
+    View để xóa subject khỏi class 
+    """
+    try:
+        class_obj = Class.objects.get(id=class_id)
+        assign = Assign.objects.get(id=assign_id, class_id=class_obj)
+        subject_name = assign.subject.name
+        assign.delete()
+        messages.success(request, _(
+            'Subject "{}" has been removed from class "{}".').format(subject_name, class_obj))
+    except Class.DoesNotExist:
+        messages.error(request, _('The class does not exist!'))
+    except Assign.DoesNotExist:
+        messages.error(request, _('The assignment does not exist!'))
     return redirect('edit_class', class_id=class_id)
 

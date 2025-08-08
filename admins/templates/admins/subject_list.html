@@ -1,0 +1,94 @@
+{% extends 'admins/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Manage Subjects" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="welcome-card">
+        <h2>{% trans "Manage Subjects" %}</h2>
+        <p class="mb-0 opacity-75">{% trans "View and manage all subjects" %}</p>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="action-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0">{% trans "Subjects" %}</h3>
+                    <a href="{% url 'add_subject' %}" class="btn-add-modern">
+                        <i class="fas fa-plus me-2"></i>{% trans "Add New Subject" %}
+                    </a>
+                </div>
+
+                <div class="table-modern">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>{% trans "ID" %}</th>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Short Name" %}</th>
+                                <th>{% trans "Department" %}</th>
+                                <th>{% trans "Actions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject in subjects %}
+                            <tr>
+                                <td data-label="{% trans 'ID' %}">{{ subject.id }}</td>
+                                <td data-label="{% trans 'Name' %}">{{ subject.name }}</td>
+                                <td data-label="{% trans 'Short Name' %}">{{ subject.shortname }}</td>
+                                <td data-label="{% trans 'Department' %}">{{ subject.dept.name }}</td>
+                                <td data-label="{% trans 'Actions' %}">
+                                    <div class="btn-group-custom">
+                                        <a href="{% url 'edit_subject' subject_id=subject.id %}" class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit me-1"></i> {% trans "Edit" %}
+                                        </a>
+                                        <a href="{% url 'delete_subject' subject_id=subject.id %}" class="btn btn-sm btn-danger"onclick="return confirm('{% trans 'Are you sure you want to delete this subject?' %}');">
+                                            <i class="fas fa-trash me-1"></i> {% trans "Delete" %}
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-book"></i>
+                                        <h5>{% trans "No subjects found" %}</h5>
+                                        <p>{% trans "Start by adding your first subject" %}</p>
+                                        <a href="{% url 'add_subject' %}" class="btn-add-modern">
+                                            <i class="fas fa-plus me-2"></i>{% trans "Add New Subject" %}
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if subjects.has_other_pages %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if subjects.has_previous %}
+                        <li class="previous_page_number">
+                            <a class="page-link" href="?page={{ subjects.previous_page_number }}">{% trans "Previous" %}</a>
+                        </li>
+                        {% endif %}
+                        {% for num in subjects.paginator.page_range %}
+                        <li class="has_other_pages {% if subjects.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endfor %}
+                        {% if subjects.has_next %}
+                        <li class="next_page_number">
+                            <a class="page-link" href="?page={{ subjects.next_page_number }}">{% trans "Next" %}</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
