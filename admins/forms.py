@@ -1006,3 +1006,153 @@ class AddSubjectToClassForm(forms.Form):
                     _('This subject is already assigned to this class with the selected teacher.')
                 )
         return cleaned_data
+
+class AddUserForm(forms.ModelForm):
+    """
+    Form for adding new user accounts
+    """
+    username = forms.CharField(
+        max_length=ADMIN_USERNAME_MAX_LENGTH,
+        widget=forms.TextInput(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'placeholder': _(USERNAME_PLACEHOLDER),
+            'required': True
+        }),
+        label=_(USERNAME_LABEL)
+    )
+
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'placeholder': _('Enter email address'),
+            'required': True
+        }),
+        label=_('Email')
+    )
+
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'placeholder': _(PASSWORD_PLACEHOLDER),
+            'required': True
+        }),
+        label=_(PASSWORD_LABEL),
+        min_length=ADMIN_PASSWORD_MIN_LENGTH
+    )
+
+    password_confirm = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'placeholder': _('Confirm password'),
+            'required': True
+        }),
+        label=_('Confirm Password')
+    )
+
+    first_name = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'placeholder': _('Enter first name'),
+            'required': True
+        }),
+        label=_('First Name')
+    )
+
+    last_name = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'placeholder': _('Enter last name'),
+            'required': False
+        }),
+        label=_('Last Name'),
+        required=False
+    )
+
+    is_superuser = forms.BooleanField(
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input'
+        }),
+        label=_('Is Admin'),
+        required=False
+    )
+
+    is_active = forms.BooleanField(
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input'
+        }),
+        label=_('Is Active'),
+        initial=True,
+        required=False
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'is_superuser', 'is_active']
+
+    def clean_password_confirm(self):
+        password = self.cleaned_data.get('password')
+        password_confirm = self.cleaned_data.get('password_confirm')
+        if password and password_confirm and password != password_confirm:
+            raise ValidationError(_('Passwords do not match'))
+        return password_confirm
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise ValidationError(_('Username already exists'))
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError(_('Email already exists'))
+        return email
+
+class EditUserForm(AddUserForm):
+    """
+    Form for editing existing user accounts
+    """
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'placeholder': _('Leave blank to keep current password'),
+            'required': False
+        }),
+        label=_('New Password'),
+        required=False
+    )
+
+    password_confirm = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': FORM_CONTROL_CLASS,
+            'placeholder': _('Confirm new password'),
+            'required': False
+        }),
+        label=_('Confirm New Password'),
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['username'].initial = self.instance.username
+            self.fields['email'].initial = self.instance.email
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if self.instance and self.instance.pk and username == self.instance.username:
+            return username
+        if User.objects.filter(username=username).exists():
+            raise ValidationError(_('Username already exists'))
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if self.instance and self.instance.pk and email == self.instance.email:
+            return email
+        if User.objects.filter(email=email).exists():
+            raise ValidationError(_('Email already exists'))
+        return email
+    

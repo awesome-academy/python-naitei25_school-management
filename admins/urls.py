@@ -50,4 +50,11 @@ urlpatterns = [
     
     #Report admin
     path('reports/', views.admin_reports, name='admin_reports'),
+    
+    #Quản lý người dùng
+    path('users/', views.user_list, name='user_list'),
+    path('users/add/', views.add_user, name='add_user'),
+    path('users/<int:user_id>/edit/', views.edit_user, name='edit_user'),
+    path('users/<int:user_id>/toggle-status/', views.toggle_user_status, name='toggle_user_status'),
+    
 ]

@@ -587,3 +587,55 @@ body {
         width: auto;
     }
 }
+
+.text-muted {
+    color: #6c757d !important;
+}
+.opacity-50 {
+    opacity: 0.5;
+}
+.badge {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+.bg-primary { background-color: #007bff; color: white; }
+.bg-info { background-color: #17a2b8; color: white; }
+.bg-success { background-color: #28a745; color: white; }
+.bg-secondary { background-color: #6c757d; color: white; }
+
+.filter-form {
+    gap: 1rem;
+    font-family: 'Roboto', sans-serif;
+}
+
+.filter-field {
+    height: 40px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.role-filter {
+    border: none;
+    color: #6c757d !important; 
+    font-family: 'Roboto', sans-serif;
+    background-color: #fff; 
+}
+
+.role-filter:focus {
+    border: none; 
+    box-shadow: none; 
+    color: #6c757d !important; 
+}
+
+.search-btn {
+    height: 25px;
+    font-family: 'Roboto', sans-serif;
+    background-color: #007bff;
+    border-color: #007bff;
+}
