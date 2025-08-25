@@ -1,0 +1,164 @@
+{% extends 'admins/base.html' %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="welcome-card">
+        <h2>{{ title }}</h2>
+        <p class="mb-0 opacity-75">{% trans "View and manage all user accounts" %}</p>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="action-card">
+                <!-- Search and Filter Section -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                    <form method="get" class="d-flex align-items-center flex-wrap" style="gap: 1rem; font-family: 'Roboto', sans-serif;">
+                        <input type="text" name="q" class="form-control filter-field" placeholder="{% trans 'Search by username or email' %}" value="{{ request.GET.q|default:'' }}" aria-label="{% trans 'Search by username or email' %}" style="height: 40px; font-family: 'Roboto', sans-serif;">
+                        
+                        <select name="is_active" class="form-select filter-field" onchange="this.form.submit()" aria-label="{% trans 'Filter by status' %}" style="height: 40px; font-family: 'Roboto', sans-serif;">
+                            <option value="">{% trans "All Statuses" %}</option>
+                            <option value="True" {% if request.GET.is_active == 'True' %}selected{% endif %}>{% trans "Active" %}</option>
+                            <option value="False" {% if request.GET.is_active == 'False' %}selected{% endif %}>{% trans "Inactive" %}</option>
+                        </select>
+                        
+                        <select name="role" class="form-select filter-field" onchange="this.form.submit()" aria-label="{% trans 'Filter by role' %}" style="height: 40px; font-family: 'Roboto', sans-serif;">
+                            <option value="">{% trans "All Roles" %}</option>
+                            <option value="admin" {% if request.GET.role == 'admin' %}selected{% endif %}>{% trans "Admin" %}</option>
+                            <option value="student" {% if request.GET.role == 'student' %}selected{% endif %}>{% trans "Student" %}</option>
+                            <option value="teacher" {% if request.GET.role == 'teacher' %}selected{% endif %}>{% trans "Teacher" %}</option>
+                        </select>
+                        
+                        <button type="submit" class="btn btn-primary" style="height: 40px; font-family: 'Roboto', sans-serif; background-color: #007bff; border-color: #007bff;" aria-label="{% trans 'Search users' %}">
+                            <i class="fas fa-search me-2"></i>
+                        </button>
+                    </form>
+                    <a href="{% url 'add_user' %}" class="btn-add-modern">
+                        <i class="fas fa-plus me-2"></i>{% trans "Add New User" %}
+                    </a>
+                </div>
+
+                <div class="table-modern">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    {% trans "Username" %}
+                                    <a href="?sort=username{% if request.GET.sort == 'username' %}&dir=desc{% elif request.GET.sort == 'username_desc' %}&dir=asc{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}" class="ms-2 text-white">
+                                        <i class="fas fa-sort"></i>
+                                    </a>
+                                </th>
+                                <th>
+                                    {% trans "Full Name" %}
+                                    <a href="?sort=full_name{% if request.GET.sort == 'full_name' %}&dir=desc{% elif request.GET.sort == 'full_name_desc' %}&dir=asc{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}" class="ms-2 text-white">
+                                        <i class="fas fa-sort"></i>
+                                    </a>
+                                </th>
+                                <th>
+                                    {% trans "Email" %}
+                                    <a href="?sort=email{% if request.GET.sort == 'email' %}&dir=desc{% elif request.GET.sort == 'email_desc' %}&dir=asc{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}" class="ms-2 text-white">
+                                        <i class="fas fa-sort"></i>
+                                    </a>
+                                </th>
+                                <th>
+                                    {% trans "Role" %}
+                                    <a href="?sort=role{% if request.GET.sort == 'role' %}&dir=desc{% elif request.GET.sort == 'role_desc' %}&dir=asc{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}" class="ms-2 text-white">
+                                        <i class="fas fa-sort"></i>
+                                    </a>
+                                </th>
+                                <th>{% trans "Active" %}</th>
+                                <th>{% trans "Actions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr {% if not user.is_active %}style="background-color: #f8d7da;"{% endif %}>
+                                <td data-label="{% trans 'Username' %}">
+                                    <strong class="text-purple">{{ user.username }}</strong>
+                                </td>
+                                <td data-label="{% trans 'Full Name' %}">{{ user.get_full_name|default:user.username }}</td>
+                                <td data-label="{% trans 'Email' %}">{{ user.email }}</td>
+                                <td data-label="{% trans 'Role' %}">
+                                    {% if user.is_superuser %}
+                                        <span class="badge bg-primary">{% trans "Admin" %}</span>
+                                    {% elif user.is_student %}
+                                        <span class="badge bg-info">{% trans "Student" %}</span>
+                                    {% elif user.is_teacher %}
+                                        <span class="badge bg-success">{% trans "Teacher" %}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{% trans "User" %}</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="{% trans 'Active' %}">
+                                    {% if user.is_active %}
+                                        <span class="badge bg-success">{% trans "Yes" %}</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">{% trans "No" %}</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="{% trans 'Actions' %}">
+                                    <div class="btn-group-custom">
+                                        <a href="{% url 'edit_user' user.id %}" class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit me-1"></i> {% trans "Edit" %}
+                                        </a>
+                                        <a href="{% url 'toggle_user_status' user.id %}" 
+                                           class="btn btn-sm {% if user.is_active %}btn-danger{% else %}btn-success{% endif %}"onclick='return confirm("{% trans 'Are you sure you want to toggle the status of this user?' %}");'>
+                                            <i class="fas {% if user.is_active %}fa-lock{% else %}fa-unlock{% endif %} me-1"></i> 
+                                            {% if user.is_active %}{% trans "Deactivate" %}{% else %}{% trans "Activate" %}{% endif %}
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <i class="fas fa-users"></i>
+                                        <h5>{% trans "No users found" %}</h5>
+                                        <p>{% trans "Start by creating your first user" %}</p>
+                                        <a href="{% url 'add_user' %}" class="btn-add-modern">
+                                            <i class="fas fa-plus me-2"></i>{% trans "Add New User" %}
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if users.has_other_pages %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination-modern">
+                        {% if users.has_previous %}
+                        <li>
+                            <a class="page-link" href="?page={{ users.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% if request.GET.dir %}&dir={{ request.GET.dir }}{% endif %}{% endif %}">
+                                {% trans "Previous" %}<i class="fas fa-chevron-left ms-1"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in users.paginator.page_range %}
+                        <li {% if users.number == num %}class="active"{% endif %}>
+                            <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% if request.GET.dir %}&dir={{ request.GET.dir }}{% endif %}{% endif %}">{{ num }}</a>
+                        </li>
+                        {% endfor %}
+                        
+                        {% if users.has_next %}
+                        <li>
+                            <a class="page-link" href="?page={{ users.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% if request.GET.dir %}&dir={{ request.GET.dir }}{% endif %}{% endif %}">
+                                {% trans "Next" %}<i class="fas fa-chevron-right ms-1"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
